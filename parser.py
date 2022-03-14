@@ -15,7 +15,7 @@ def parse_command(name:str) -> str:
         else:
             return data['suggestions'][0]['link']
 
-def get_command_stat(url: str) -> tuple:
+def get_command_stat(url: str) -> dict:
     response = requests.get(url + 'calendar/')
     response.encoding = 'cp1251'
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -23,16 +23,29 @@ def get_command_stat(url: str) -> tuple:
     tbody = table.find('tbody')
     td = tbody.find_all('tr')
     #td = tbody.find_all('td', class_ = 'alRight padR20')
+    games = []
     for line in td:
-        print('-'*10)
-        print(line.find('td', class_ = 'alRight padR20').text)
-        print(line.find('a', class_ = 'score').text.strip())
+        #print('-'*10)
+        where = line.find('td', class_ = 'alRight padR20').text
+        #print(line.find('a', class_ = 'score').text.strip())
         data = line.find('a', class_ = 'score').text.strip()
         data = data.split(' ')
-        print(data)
-        
+        data = [i.strip() for i in data]
+        score = []
+        for line in data:
+            try:
+                score.append(int(line))
+            except ValueError:
+                pass
 
+        games.append({'where':where, 'score': score})
+        #print(games)
+    return games
+
+def parse_live_games() -> dict:
+    '''Вытаскиваем данные с fonbet о предстоящих играх'''
+    pass
 
 if __name__ == '__main__':
     print('test')
-    print(get_command_stat(parse_command('Ак Барс')))
+    print(get_command_stat(parse_command('Барс')))
