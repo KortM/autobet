@@ -17,7 +17,7 @@ def parse_command(name:str) -> str:
 
 def get_command_stat(url: str) -> dict:
     response = requests.get(url + 'calendar/')
-    response.encoding = 'cp1251'
+    response.encoding = 'utf-8'
     soup = BeautifulSoup(response.text, 'html.parser')
     table = soup.find('table', class_ = 'stat-table')
     tbody = table.find('tbody')
